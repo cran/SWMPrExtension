@@ -2,7 +2,7 @@ Package: SWMPrExtension
 Type: Package
 Title: Additional Functions for Retrieving, Organizing, and Analyzing
         Estuary Monitoring Data
-Version: 0.3.12
+Version: 0.3.14
 Author: Julie Padilla [aut, cre],
   Marcus Beck [ctb],
   Bob Rudis [ctb]
@@ -19,8 +19,7 @@ LazyData: true
 Depends: R (>= 3.2.0), SWMPr
 Imports: broom, dplyr, EnvStats, flextable, ggplot2, ggthemes,
         grDevices, leaflet, lubridate, magrittr, maptools, methods,
-        officer, tidyr, scales, RColorBrewer, rgdal, rgeos, rlang,
-        stringr, sp
+        officer, tidyr, scales, RColorBrewer, rgdal, rgeos, rlang, sp
 Authors@R: c(
   person(given = "Julie", family = "Padilla",
     role = c("aut", "cre"),
@@ -34,6 +33,6 @@ Authors@R: c(
 	)
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2018-04-07 02:28:51 UTC; Julie
+Packaged: 2018-05-07 20:01:49 UTC; Julie
 Repository: CRAN
-Date/Publication: 2018-04-09 11:20:25 UTC
+Date/Publication: 2018-05-13 03:11:10 UTC
