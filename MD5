@@ -1,6 +1,6 @@
-5ae27ad4dc8b6ae2b312fd710ae13c2d *DESCRIPTION
+abdbf995fefa324083ba99314e7d183b *DESCRIPTION
 c6141a3847f928454dc73d75c9f290e8 *NAMESPACE
-a051cec315e06cc5cd8814218c4f2668 *NEWS.md
+5b31a3dee24cf07652d0e62aeddefc1c *NEWS.md
 20b15ec32e34f4651d81a3a5a2c19c95 *R/annual_range.R
 1255d2bd453cb2094ae50dac3be215bd *R/assign_season.R
 ecdfa7b6cc261d3fb9707deed2ac5629 *R/cbm_spatial.R
@@ -44,7 +44,7 @@ c1ac2991f959d8b0653d901459dff706 *R/set_date_breaks.R
 07b97c907f37759479c40fd47ef195fa *R/summarise_handoff_files.R
 e03e4d4b8b576f624994d562c3137222 *R/threshold_criteria_plot.R
 821c336d57ec89c1a84f8fb690b82e98 *R/threshold_identification.R
-a6877f157edb6abd6cf289e8f6687846 *R/threshold_percentile_plot.R
+51bab2971eba1d5f7cb12441ef38e42c *R/threshold_percentile_plot.R
 22a2eda3c6e3dd7eda21120142163e2c *R/threshold_summary.R
 27febadf0c2d2b767a8cc3b7765cfc34 *R/title_labeler.R
 4d2d5b372d321e9fa8e01489d1bcfeea *R/us_aea.R
@@ -106,7 +106,7 @@ bbd3a184e3032282d8851361e058f2ff *man/sk_tidy.Rd
 da603e430d3deb1027a7f753602935d8 *man/summarise_handoff_files.Rd
 ad834cf880d415cc37d4b8eaccb4f9d0 *man/threshold_criteria_plot.Rd
 b1027cacb8418bf6dd3ebbbcd2c382af *man/threshold_identification.Rd
-8ade5344892c9abe39f1271fec552c12 *man/threshold_percentile_plot.Rd
+3c217d249003589e6c1b472337d87814 *man/threshold_percentile_plot.Rd
 98d1f8b50e99ce2d0811fd2f78ade695 *man/threshold_summary.Rd
 3b02c8b0c6d7d02d8f4092ed6cf411b5 *man/title_labeler.Rd
 ffda1d27766880de2422ffaee0673676 *man/us_aea.Rd
