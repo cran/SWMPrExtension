@@ -1,6 +1,6 @@
-abdbf995fefa324083ba99314e7d183b *DESCRIPTION
-c6141a3847f928454dc73d75c9f290e8 *NAMESPACE
-5b31a3dee24cf07652d0e62aeddefc1c *NEWS.md
+e5b9c9127bc2080e8e02f49193f16533 *DESCRIPTION
+86b648b1f5ec66aa7f204f631ce92a46 *NAMESPACE
+b665f1ef1e99ebcb3944f0e4fc7058db *NEWS.md
 20b15ec32e34f4651d81a3a5a2c19c95 *R/annual_range.R
 1255d2bd453cb2094ae50dac3be215bd *R/assign_season.R
 ecdfa7b6cc261d3fb9707deed2ac5629 *R/cbm_spatial.R
@@ -20,8 +20,8 @@ dac1becdaf583ef0772aef99e4408042 *R/generate_station_table.R
 4ae869d37c7eb05dfb794e3cf184e8b1 *R/get_site_coordinates.R
 8521de4054b6c4e7f4801d8db96e7614 *R/get_sites.R
 2758715b2ed79ecd6b5ee4211989f1ac *R/globalVariables.R
-c0c492e56069da762c929b95b378b633 *R/historical_daily_range.R
-54fd59488d523b104792e3fc1f14ce09 *R/historical_range.R
+8adb9f2e75f345a1a8c313662537c3b7 *R/historical_daily_range.R
+bc371c2e01c8446a04844b7a9bfc6b89 *R/historical_range.R
 7e26ce911e79130665a0c77d1b035ca6 *R/import_local_nut.R
 ce5075161d84ee96aec27653714ca057 *R/lm_p_labs.R
 b4ff82de60809faab76b1268bed305ff *R/load_shp_file.R
@@ -81,8 +81,8 @@ bb202e68ba768683eb02527990d9d0f1 *man/get_shp_name.Rd
 c2281b2993a69913934d7acf5b954e93 *man/get_site_code.Rd
 85827f85e86eb6c3c58c6e1521b0c8ff *man/get_site_coordinates.Rd
 3096ff270a17c6c828ada90193b64438 *man/get_sites.Rd
-26f758304f21eace6f25747ed29b604a *man/historical_daily_range.Rd
-3042be88712a28bb46de5481f0e06cc0 *man/historical_range.Rd
+154e1b620c592a85c6b004cf78155dd2 *man/historical_daily_range.Rd
+b3895a8ad778512daa6303b5272402fe *man/historical_range.Rd
 2ee321bd39dd5b485450dc0b47f67683 *man/import_local_nut.Rd
 9913c9a4459e6e41d609bead6d6d11c3 *man/lm_p_labs.Rd
 2e44dd3625dbb4d8179bd32b61520656 *man/load_shp_file.Rd
