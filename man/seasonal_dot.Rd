@@ -8,8 +8,8 @@
 seasonal_dot(swmpr_in, ...)
 
 \method{seasonal_dot}{swmpr}(swmpr_in, param = NULL, lm_trend = FALSE,
-  lm_lab = FALSE, log_trans = FALSE, converted = FALSE,
-  plot_title = FALSE, plot = TRUE, ...)
+  lm_lab = FALSE, free_y = FALSE, log_trans = FALSE,
+  converted = FALSE, plot_title = FALSE, plot = TRUE, ...)
 }
 \arguments{
 \item{swmpr_in}{input swmpr object}
@@ -21,6 +21,8 @@ seasonal_dot(swmpr_in, ...)
 \item{lm_trend}{logical, add linear trend line?}
 
 \item{lm_lab}{logical, add significance label? Statistically significant results will appear in bold.}
+
+\item{free_y}{logical, should the y-axis be free? Defaults to \code{FALSE}. If \code{FALSE}, defaults to zero, unless negative values are present. If \code{TRUE}, y-axis limits are selected by \code{ggplot}}
 
 \item{log_trans}{logical, should y-axis be log? Defaults to \code{FALSE}}
 
@@ -39,7 +41,7 @@ Plot average/min/max seasonal values faceted by season
 \details{
 This function summarizes minimum, mean, and maximum values calculated on a seasonal basis to allow for easier intra-season comparisons over time.
 
-\code{lm_trend = T} adds a linear regression to the plot, and \code{lm_lab = T} will add p-values from the linear regression to the plot. If the p-values are significant (p < 0.05) then the text will appear in bold. \code{lm_lab} text is color coded to match with the corresponding dots.
+\code{lm_trend = TRUE} adds a linear regression to the plot, and \code{lm_lab = TRUE} will add p-values from the linear regression to the plot. If the p-values are significant (p < 0.05) then the text will appear in bold. \code{lm_lab} text is color coded to match with the corresponding dots.
 }
 \examples{
 dat_wq <- elksmwq
@@ -52,7 +54,7 @@ x <-
                , lm_lab = TRUE
                , plot_title = TRUE)
 
-\dontrun{
+\donttest{
 x <-
   seasonal_dot(dat_wq, param = 'do_mgl'
                , lm_trend = FALSE
@@ -99,8 +101,4 @@ x <-
 \author{
 Julie Padilla
 }
-\concept{
-analyze
-
-analyze
-}
+\concept{analyze}

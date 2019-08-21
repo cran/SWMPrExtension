@@ -6,6 +6,7 @@
 #' @param param chr string of variable to plot
 #' @param lm_trend logical, add linear trend line?
 #' @param lm_lab logical, add significance label? Statistically significant results will appear in bold.
+#' @param free_y logical, should the y-axis be free? Defaults to \code{FALSE}. If \code{FALSE}, defaults to zero, unless negative values are present. If \code{TRUE}, y-axis limits are selected by \code{ggplot}
 #' @param log_trans logical, should y-axis be log? Defaults to \code{FALSE}
 #' @param converted logical, were the units converted from the original units used by CDMO? Defaults to \code{FALSE}. See \code{y_labeler} for details.
 #' @param plot_title logical, should the station name be included as the plot title? Defaults to \code{FALSE}
@@ -21,14 +22,14 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom tidyr complete gather
 #' @importFrom rlang .data
-#' @importFrom scales comma
+#' @importFrom scales format_format pretty_breaks
 #' @importFrom stats median
 #'
 #' @export
 #'
 #' @details This function summarizes minimum, mean, and maximum values calculated on a seasonal basis to allow for easier intra-season comparisons over time.
 #'
-#' \code{lm_trend = T} adds a linear regression to the plot, and \code{lm_lab = T} will add p-values from the linear regression to the plot. If the p-values are significant (p < 0.05) then the text will appear in bold. \code{lm_lab} text is color coded to match with the corresponding dots.
+#' \code{lm_trend = TRUE} adds a linear regression to the plot, and \code{lm_lab = TRUE} will add p-values from the linear regression to the plot. If the p-values are significant (p < 0.05) then the text will appear in bold. \code{lm_lab} text is color coded to match with the corresponding dots.
 #'
 #' @author Julie Padilla
 #'
@@ -47,7 +48,7 @@
 #'                , lm_lab = TRUE
 #'                , plot_title = TRUE)
 #'
-#' \dontrun{
+#' \donttest{
 #' x <-
 #'   seasonal_dot(dat_wq, param = 'do_mgl'
 #'                , lm_trend = FALSE
@@ -92,8 +93,6 @@ seasonal_dot <- function(swmpr_in, ...) UseMethod('seasonal_dot')
 
 #' @rdname seasonal_dot
 #'
-#' @concept analyze
-#'
 #' @export
 #'
 #' @method seasonal_dot swmpr
@@ -102,6 +101,7 @@ seasonal_dot.swmpr <- function(swmpr_in
                                , param = NULL
                                , lm_trend = FALSE
                                , lm_lab = FALSE
+                               , free_y = FALSE
                                , log_trans = FALSE
 							                 , converted = FALSE
                                , plot_title = FALSE
@@ -139,7 +139,7 @@ seasonal_dot.swmpr <- function(swmpr_in
     warning('QAQC columns present. QAQC not performed before analysis.')
 
   # Assign the seasons and order them
-  dat$season <- assign_season(dat$datetimestamp, abb = T, ...)
+  dat$season <- assign_season(dat$datetimestamp, abb = TRUE, ...)
 
   # Assign date for determining daily stat value
   dat$year <- lubridate::year(dat$datetimestamp)
@@ -152,13 +152,16 @@ seasonal_dot.swmpr <- function(swmpr_in
   # calc seasonal values
   plt_data <- dat %>%
     group_by(!! yr, !! seas) %>%
-    summarise(min = min(!! parm, na.rm = T)
-              , mean = mean(!! parm, na.rm = T)
-              , max = max(!! parm, na.rm = T)
+    summarise(min = min(!! parm, na.rm = TRUE)
+              , mean = mean(!! parm, na.rm = TRUE)
+              , max = max(!! parm, na.rm = TRUE)
               )
 
   # ensure all factor levels are accounted for, even if there is no data
   plt_data <- tidyr::complete(plt_data, !! seas)
+
+  # remove NaN, -Inf, Inf values
+  plt_data[, c(3:5)] <- remove_inf_and_nan(plt_data[, c(3:5)])
 
   if(plot) {
     agg_lab <- ifelse(length(levels(plt_data$season)) == 12, 'Monthly ', 'Seasonal ')
@@ -166,11 +169,11 @@ seasonal_dot.swmpr <- function(swmpr_in
     labs_legend <- factor(paste0(agg_lab, c('Minimum', 'Average', 'Maximum'), sep = ''))
     brks <- range(plt_data$year)
 
-    mx <- max(plt_data[ , c(3:5)], na.rm = T) * 1.2
+    mx <- max(plt_data[ , c(3:5)], na.rm = TRUE) * 1.2
     mx <- ifelse(data_type == 'nut' && param != 'chla_n', ceiling(mx/0.01) * 0.01, ceiling(mx))
 
     # assign a minimum of zero unles there are values < 0
-    mn <- min(plt_data[ , c(3:5)], na.rm = T)
+    mn <- min(plt_data[ , c(3:5)], na.rm = TRUE)
     mn <- ifelse(mn < 0 , min(pretty(mn)), 0)
     mn <- ifelse(log_trans, ifelse(substr(station, 6, nchar(station)) == 'nut', 0.001, 0.1), mn)
 
@@ -185,21 +188,23 @@ seasonal_dot.swmpr <- function(swmpr_in
       facet_wrap(~ season) +
       labs(x = NULL, y = eval(y_label))
 
-    # add a log transformed access if log_trans = T
+    # add a log transformed access if log_trans == TRUE
+    ## allow y-axis to be free if free_y == TRUE
     if(!log_trans) {
 
-      plt <- plt + scale_y_continuous(limits = c(mn, mx), trans = y_trans, labels = scales::comma)
+      plt <- plt +
+        scale_y_continuous(labels = format_format(digits = 2, big.mark = ",", decimal.mark = ".", scientific = FALSE)
+                           , breaks = pretty_breaks(n = 8))
+
+      if(!free_y){plt <- plt + expand_limits(y = mn)}
 
     } else {
+      plt <- plt +
+        scale_y_continuous(trans = y_trans
+                                , labels = format_format(digits = 2, big.mark = ",", decimal.mark = ".", scientific = FALSE)
+                                , breaks = pretty_breaks(n = 8))
 
-      mx_log <- 10^(ceiling(log10(mx)))
-
-      mag_lo <- nchar(mn) - 2
-      mag_hi <- nchar(mx_log) - 1
-
-      brks <- 10^(-mag_lo:mag_hi)
-
-      plt <- plt + scale_y_continuous(limits = c(mn, mx_log), breaks = brks, trans = y_trans, labels = scales::comma)
+      if(!free_y) {plt <- plt + expand_limits(y = mn)}
     }
 
 
@@ -222,17 +227,17 @@ seasonal_dot.swmpr <- function(swmpr_in
       plt +
       theme(legend.key.size = unit(7, 'pt')) +
       theme(legend.text = element_text(size = 10)) +
-      theme(legend.spacing.x = unit(-6, 'pt'))
+      theme(legend.spacing.x = unit(3, 'pt'))
 
     # add regression line if specified
     if(lm_trend) {
       plt <-
         plt +
-        geom_smooth(method = 'lm', se = F, lwd = 0.5) +
+        geom_smooth(method = 'lm', se = FALSE, lwd = 0.5) +
         geom_smooth(aes_string(x = 'year', y = 'mean', color = labs_legend[2])
-                    , method = 'lm', se = F, lwd = 0.5) +
+                    , method = 'lm', se = FALSE, lwd = 0.5) +
         geom_smooth(aes_string(x = 'year', y = 'max', color = labs_legend[3])
-                    , method = 'lm', se = F, lwd = 0.5)
+                    , method = 'lm', se = FALSE, lwd = 0.5)
     }
 
     # add regression p-values if specified
@@ -240,16 +245,19 @@ seasonal_dot.swmpr <- function(swmpr_in
 
       p_labs <- lm_p_labs(plt_data)
 
+      # return max y-value from ggplot object
+      y_mx <- max(ggplot_build(plt)$layout$panel_scales_y[[1]]$range$range)
+
       if(nrow(p_labs) > 0) {
         plt <-
           plt +
-          annotate("text", x = brks[2], y = mx
+          annotate("text", x = brks[2], y = y_mx
                    , label = p_labs$max, fontface = ifelse(p_labs$max == 'p < 0.05', 2, 1)
                    , hjust = 1, color = 'red') +
-          annotate("text", x = brks[2], y = mx * 0.9
+          annotate("text", x = brks[2], y = y_mx * 0.9
                    , label = p_labs$mean, fontface = ifelse(p_labs$mean == 'p < 0.05', 2, 1)
                    , hjust = 1, color = 'black') +
-          annotate("text", x = brks[2], y = mx * 0.8
+          annotate("text", x = brks[2], y = y_mx * 0.8
                    , label = p_labs$min, fontface = ifelse(p_labs$min == 'p < 0.05', 2, 1)
                    , hjust = 1, color = 'blue')
       } else {

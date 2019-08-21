@@ -30,7 +30,7 @@
 #' @return Returns a data frame of threshold exceedances by parameter
 #'
 #' @references
-#' United States Environmental Protection Agency (USEPA). 2016. "National Coastal Condition Assessment 2010". EPA 841-R-15-006.
+#' United States Environmental Protection Agency (USEPA). 2015. "National Coastal Condition Assessment 2010". EPA 841-R-15-006.
 #' https://cfpub.epa.gov/si/si_public_record_Report.cfm?dirEntryId=327030
 #'
 #' @examples
@@ -43,7 +43,7 @@
 #'                           , parameter_threshold = c(2, 5, 30)
 #'                           , threshold_type = c('<', '<', '>'), time_threshold = 2)
 #'
-#' \dontrun{
+#' \donttest{
 #' wq_par<- threshold_identification(dat_wq, param = c('do_mgl')
 #'                           , parameter_threshold = c(2)
 #'                           , threshold_type = c('<'), time_threshold = 2)
@@ -70,8 +70,6 @@
 threshold_identification <- function(swmpr_in, ...) UseMethod('threshold_identification')
 
 #' @rdname threshold_identification
-#'
-#' @concept analyze
 #'
 #' @export
 #'
@@ -125,7 +123,7 @@ threshold_identification.swmpr <- function(swmpr_in
 
   # Prepare logical statements to be used in analysis
   statements <- paste(param, thresh_type, thresholds)
-  df_statements <- data.frame(parameter = param, statement = statements, stringsAsFactors = F)
+  df_statements <- data.frame(parameter = param, statement = statements, stringsAsFactors = FALSE)
 
   if(data_type != 'nut') {
     # stop if time series is not standardized
@@ -201,7 +199,7 @@ threshold_identification.swmpr <- function(swmpr_in
     if(length(param) > 1){
       ls <- list(rep(dat, length(param)))
 
-      x <- mapply(generate_nut_flags, ls, statements, SIMPLIFY = F)
+      x <- mapply(generate_nut_flags, ls, statements, SIMPLIFY = FALSE)
       names(x) <- param
 
       out <- bind_rows(x, .id = 'parameter')

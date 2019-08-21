@@ -6,6 +6,7 @@
 #' @param param chr string of variable to plot
 #' @param target_yr numeric, the target year that should be compared against the historic range. If target year is not specified then the dot will not be plotted.
 #' @param criteria numeric, a numeric criteria that will be plotted as a horizontal line
+#' @param free_y logical, should the y-axis be free? Defaults to \code{FALSE}. If \code{FALSE}, defaults to zero, unless negative values are present. If \code{TRUE}, y-axis limits are selected by \code{ggplot}
 #' @param log_trans logical, should y-axis be log? Defaults to \code{FALSE}
 #' @param converted logical, were the units converted from the original units used by CDMO? Defaults to \code{FALSE}. See \code{y_labeler} for details.
 #' @param criteria_lab chr, label for the threshold criteria defined in \code{criteria}. Defaults to "WQ Threshold"
@@ -19,7 +20,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom lubridate  year floor_date
 #' @importFrom rlang .data
-#' @importFrom scales comma
+#' @importFrom scales format_format pretty_breaks
 #' @importFrom tidyr complete
 #'
 #' @export
@@ -45,7 +46,7 @@
 #' y <- annual_range(dat, param = 'do_mgl', target_yr = 2012)
 #' }
 #'
-#' \dontrun{
+#' \donttest{
 #' ## get data, prep
 #' data(elksmwq)
 #' dat <- elksmwq
@@ -59,8 +60,6 @@ annual_range <- function(swmpr_in, ...) UseMethod('annual_range')
 
 #' @rdname annual_range
 #'
-#' @concept analyze
-#'
 #' @export
 #'
 #' @method annual_range swmpr
@@ -69,6 +68,7 @@ annual_range.swmpr <- function(swmpr_in
                                , param = NULL
                                , target_yr = NULL
                                , criteria = NULL
+                               , free_y = FALSE
                                , log_trans = FALSE
                                , converted = FALSE
                                , criteria_lab = 'WQ Threshold'
@@ -135,7 +135,7 @@ annual_range.swmpr <- function(swmpr_in
 
   # Assign the seasons and order them
   dat <- dat %>% filter(lubridate::year(.data$datetimestamp) == target_yr)
-  dat$season <- assign_season(dat$datetimestamp, abb = T, ...)
+  dat$season <- assign_season(dat$datetimestamp, abb = TRUE, ...)
 
     # Assign date for determining daily stat value
   dat$date <- lubridate::floor_date(dat$datetimestamp, unit = 'days')
@@ -146,28 +146,28 @@ annual_range.swmpr <- function(swmpr_in
 
   dat_day <- dat %>%
     group_by(!! seas, !! dt) %>%
-    summarise(mean = mean(!! parm, na.rm = T)
-              , min = min(!! parm, na.rm = T)
-              , max = max(!! parm, na.rm = T))
+    summarise(mean = mean(!! parm, na.rm = TRUE)
+              , min = min(!! parm, na.rm = TRUE)
+              , max = max(!! parm, na.rm = TRUE))
 
   dat_month <- dat_day %>%
     group_by(!! seas) %>%
-    summarise(mean = mean(!! avg, na.rm = T)
-              , min_avg = mean(!! mini, na.rm = T)
-              , max_avg = mean(!! maxi, na.rm = T)
-              , min = min(!! mini, na.rm = T)
-              , max = max(!! maxi, na.rm = T))
+    summarise(mean = mean(!! avg, na.rm = TRUE)
+              , min_avg = mean(!! mini, na.rm = TRUE)
+              , max_avg = mean(!! maxi, na.rm = TRUE)
+              , min = min(!! mini, na.rm = TRUE)
+              , max = max(!! maxi, na.rm = TRUE))
 
   # ensure all factor levels are accounted for, even if there is no data
   dat_month <- tidyr::complete(dat_month, !! seas)
 
   if(plot){
     # Set the plot range
-    mx <- max(dat_day$max, na.rm = T)
-    mx <- max(pretty(mx))
+    # mx <- max(dat_day$max, na.rm = TRUE)
+    # mx <- max(pretty(mx))
 
     # assign a minimum of zero unles there are values < 0
-    mn <- min(dat_month$min, na.rm = T)
+    mn <- min(dat_month$min, na.rm = TRUE)
     mn <- ifelse(mn < 0 , min(pretty(mn)), 0)
     mn <- ifelse(log_trans, ifelse(substr(station, 6, nchar(station)) == 'nut', 0.001, 0.1), mn)
 
@@ -191,27 +191,27 @@ annual_range.swmpr <- function(swmpr_in
         geom_ribbon(aes_(x = seas, ymax = maxi, ymin = mini, group = 1, fill = lab_rng_mx, alpha = lab_rng_mx))
     }
 
-    # add a log transformed access if log_trans = T
+    # add a log transformed access if log_trans == TRUE
+    ## allow y-axis to be free if free_y == TRUE
     if(!log_trans) {
+      plt <- plt +
+        scale_y_continuous(labels = format_format(digits = 2, big.mark = ",", decimal.mark = ".", scientific = FALSE)
+                           , breaks = pretty_breaks(n = 8))
 
-      plt <- plt + scale_y_continuous(limits = c(mn, mx), trans = y_trans, labels = scales::comma)
+      if(!free_y){plt <- plt + expand_limits(y = mn)}
 
     } else {
+      plt <- plt +
+        scale_y_continuous(trans = y_trans
+                                , labels = format_format(digits = 2, big.mark = ",", decimal.mark = ".", scientific = FALSE)
+                                , breaks = pretty_breaks(n = 8))
 
-      mx_log <- 10^(ceiling(log10(mx)))
-
-      mag_lo <- nchar(mn) - 2
-      mag_hi <- nchar(mx_log) - 1
-
-      brks <- 10^(-mag_lo:mag_hi)
-
-      plt <- plt + scale_y_continuous(limits = c(mn, mx_log), breaks = brks, trans = y_trans, labels = scales::comma)
+      if(!free_y) {plt <- plt + expand_limits(y = mn)}
     }
-
 
     plt <-
       plt +
-      scale_fill_manual('', values = c(rep('steelblue3', 3)), guide = F) +
+      scale_fill_manual('', values = c(rep('steelblue3', 3)), guide = FALSE) +
       scale_shape_manual('', values = c(21)) +
       scale_alpha_manual('', values = c(0.4, 0.15))
 
@@ -227,7 +227,7 @@ annual_range.swmpr <- function(swmpr_in
       plt <- plt +
         geom_hline(aes(yintercept = criteria, color = factor(criteria_lab)
                        , linetype = factor(criteria_lab))
-                   , show.legend = T) +
+                   , show.legend = TRUE) +
         scale_color_manual('', values = c('red')) +
         scale_linetype_manual('', values = c('longdash'))
     }
@@ -263,7 +263,7 @@ annual_range.swmpr <- function(swmpr_in
             , legend.key.width = unit(0.5, 'cm')) +
       theme(legend.text = element_text(size = 10)
             , legend.text.align = 0.5) +
-      theme(legend.spacing.x = unit(-6, 'pt'))
+      theme(legend.spacing.x = unit(3, 'pt'))
 
     return(plt)
 

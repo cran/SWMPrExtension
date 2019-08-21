@@ -12,12 +12,13 @@
 #' @param pal Select a palette for boxplot fill colors. See \code{\link[ggplot2]{scale_fill_brewer}} for more details.
 #' @param plot_title logical, should the station name be included as the plot title? Defaults to \code{FALSE}
 #' @param plot logical, should a plot be returned? Defaults to \code{TRUE}
+#' @param label_y_axis logical, include label for y-axis?
 #' @param ... additional arguments passed to other methods. See \code{\link{assign_season}} for more details.
 #'
 #'
 #' @import ggplot2
 #'
-#' @importFrom dplyr group_by left_join summarise
+#' @importFrom dplyr filter group_by left_join n summarise
 #' @importFrom magrittr "%>%"
 #' @importFrom lubridate  month year
 #' @importFrom rlang .data
@@ -33,10 +34,10 @@
 #'
 #' @concept analyze
 #'
-#' @return Returns a \code{\link[ggplot2]{ggplot}} object (if \code{plot} = \code{T}) or a dataframe (if \code{plot} = \code{F})
+#' @return Returns a \code{\link[ggplot2]{ggplot}} object (if \code{plot} = \code{TRUE}) or a dataframe (if \code{plot} = \code{FALSE})
 #'
 #' @references
-#' United States Environmental Protection Agency (USEPA). 2016. "National Coastal Condition Assessment 2010". EPA 841-R-15-006.
+#' United States Environmental Protection Agency (USEPA). 2015. "National Coastal Condition Assessment 2010". EPA 841-R-15-006.
 #' https://cfpub.epa.gov/si/si_public_record_Report.cfm?dirEntryId=327030
 #'
 #' @seealso \code{\link{assign_season}}, \code{\link[ggplot2]{ggplot}}, \code{\link{threshold_identification}}, \code{\link[ggplot2]{scale_fill_brewer}}
@@ -51,7 +52,7 @@
 #'   , threshold_type = '<', time_threshold = 2, summary_type = 'month'
 #'   , plot_title = TRUE)
 #'
-#' \dontrun{
+#' \donttest{
 #' y <-
 #'   threshold_summary(dat_wq, param = 'do_mgl', parameter_threshold = 2,
 #'   threshold_type = '<', time_threshold = 2, summary_type = 'season',
@@ -86,8 +87,6 @@ threshold_summary <- function(swmpr_in, ...) UseMethod('threshold_summary')
 
 #' @rdname threshold_summary
 #'
-#' @concept analyze
-#'
 #' @export
 #'
 #' @method threshold_summary swmpr
@@ -98,10 +97,11 @@ threshold_summary.swmpr <- function(swmpr_in
                                     , parameter_threshold = NULL
                                     , threshold_type = NULL
                                     , time_threshold = NULL
-                                    , converted = F
+                                    , converted = FALSE
                                     , pal = 'Set3'
                                     , plot_title = FALSE
                                     , plot = TRUE
+                                    , label_y_axis = TRUE
                                     , ...) {
 
   dat <- swmpr_in
@@ -130,7 +130,9 @@ threshold_summary.swmpr <- function(swmpr_in
     warning('QAQC columns present. QAQC not performed before analysis.')
 
   # Assign label for y axis
-  y_label <- y_count_labeler(param = param, parameter_threshold = parameter_threshold, threshold_type = threshold_type, time_threshold = time_threshold, converted = conv)
+  y_label <- ifelse(label_y_axis
+                    , y_count_labeler(param = param, parameter_threshold = parameter_threshold, threshold_type = threshold_type, time_threshold = time_threshold, converted = conv)
+                    , '')
 
   dat_threshold <- threshold_identification(dat
                                             , param = param
@@ -142,7 +144,7 @@ threshold_summary.swmpr <- function(swmpr_in
 
 
   # Assign the seasons and order them
-  dat_threshold$season <- assign_season(dat_threshold$starttime, abb = T, ...)
+  dat_threshold$season <- assign_season(dat_threshold$starttime, abb = TRUE, ...)
 
   summary <- dat_threshold %>%
     group_by(!! yr, !! grp, !! seas) %>%
@@ -161,7 +163,7 @@ threshold_summary.swmpr <- function(swmpr_in
 
     dummy <- data.frame(grp_join = c(mn_yr:mx_yr)
                         , year = c(mn_yr:mx_yr)
-                        , stringsAsFactors = F)
+                        , stringsAsFactors = FALSE)
 
     dat_grp <- left_join(dummy, summary)
     dat_grp$count[is.na(dat_grp$count)] <- 0
@@ -170,17 +172,20 @@ threshold_summary.swmpr <- function(swmpr_in
 
   } else {
 
+    # return(dat_threshold)
     summary <- dat_threshold %>%
       group_by(!! yr, !! grp, !! seas) %>%
       summarise(count = n())
 
     grp_ct <- as.numeric(length(unique(levels(summary$season))))
     grp_nm <- as.character(unique(levels(summary$season)))
+
     summary$grp_join <- as.character(summary$season)
+    summary <- summary %>% filter(count > 0)
 
     dummy <- data.frame(grp_join = rep(grp_nm, yr_ct)
                         , year = rep(c(mn_yr:mx_yr), each = grp_ct)
-                        , stringsAsFactors = F)
+                        , stringsAsFactors = FALSE)
 
     dat_grp <- left_join(dummy, summary)
     dat_grp$count[is.na(dat_grp$count)] <- 0
@@ -194,6 +199,7 @@ threshold_summary.swmpr <- function(swmpr_in
 
     by_arg <- ifelse(summary_type == 'year', 1, length(unique(levels(dat_grp$grp_join))))
 
+
     brks <- seq(from = 1, to = max(dat_grp$x_lab), by = by_arg)
     brk_labs <- seq(from = mn_yr, to = mx_yr, by = 1)
 
@@ -206,7 +212,7 @@ threshold_summary.swmpr <- function(swmpr_in
     plt <-
       plt +
       theme_bw() +
-      guides(fill = guide_legend(override.aes = list(linetype = 'blank'), order = 1, nrow = 2, byrow = T)) +
+      guides(fill = guide_legend(override.aes = list(linetype = 'blank'), order = 1, nrow = 2, byrow = TRUE)) +
       theme(panel.grid.minor.y = element_blank()
             , panel.grid.major.y = element_line(linetype = 'dashed')) +
       theme(panel.grid.minor.x = element_blank()) +
@@ -220,7 +226,7 @@ threshold_summary.swmpr <- function(swmpr_in
     plt <- plt +
       theme(legend.key.size = unit(7, 'pt')) +
       theme(legend.text = element_text(size = 8)) +
-      theme(legend.spacing.x = unit(-5, 'pt'))
+      theme(legend.spacing.x = unit(3, 'pt'))
 
 
     if(summary_type == 'year') {
@@ -228,7 +234,7 @@ threshold_summary.swmpr <- function(swmpr_in
       yrs <- length(unique(brks))
 
       plt <- plt + scale_fill_manual('', values = rep('gray30', yrs)) +
-        guides(fill = F)
+        guides(fill = FALSE)
     } else {
       plt <- plt + scale_fill_brewer('', palette = pal)
     }

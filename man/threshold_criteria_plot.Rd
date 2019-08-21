@@ -7,9 +7,9 @@
 \usage{
 threshold_criteria_plot(swmpr_in, ...)
 
-\method{threshold_criteria_plot}{swmpr}(swmpr_in, param = NULL, rng = NULL,
-  thresholds = NULL, threshold_labs = c("Good", "Fair", "Poor"),
-  threshold_cols = c("#ABD9E9", "#FFFFCC", "#FEC596"),
+\method{threshold_criteria_plot}{swmpr}(swmpr_in, param = NULL,
+  rng = NULL, thresholds = NULL, threshold_labs = c("Good", "Fair",
+  "Poor"), threshold_cols = c("#ABD9E9", "#FFFFCC", "#FEC596"),
   crit_threshold = NULL, log_trans = FALSE, monthly_smooth = FALSE,
   plot_title = FALSE, ...)
 }
@@ -62,7 +62,7 @@ x <-
                  , monthly_smooth = TRUE
                  , threshold_cols = c('#FEC596', '#FFFFCC', '#ABD9E9'))
 
-\dontrun{
+\donttest{
 y <-
   threshold_criteria_plot(dat_wq, param = 'do_mgl'
                  , thresholds = c(2, 5)
@@ -144,8 +144,4 @@ http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.646.1973&rep=rep1&type=
 \author{
 Julie Padilla
 }
-\concept{
-analyze
-
-analyze
-}
+\concept{analyze}

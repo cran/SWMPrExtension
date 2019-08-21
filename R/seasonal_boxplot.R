@@ -7,6 +7,7 @@
 #' @param hist_rng numeric vector, if historic range is not specified then the min/max values of the data set will be used.
 #' @param target_yr numeric, the target year that should be compared against the historic range. If target year is not specified then dot will not be plotted
 #' @param criteria numeric, a numeric criteria that will be plotted as a horizontal line
+#' @param free_y logical, should the y-axis be free? Defaults to \code{FALSE}. If \code{FALSE}, defaults to zero, unless negative values are present. If \code{TRUE}, y-axis limits are selected by \code{ggplot}
 #' @param log_trans logical, should y-axis be log? Defaults to \code{FALSE}
 #' @param converted logical, were the units converted from the original units used by CDMO? Defaults to \code{FALSE}. See \code{y_labeler} for details.
 #' @param criteria_lab chr, label for the threshold criteria defined in \code{criteria}. Defaults to "WQ Threshold"
@@ -26,7 +27,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom lubridate  year floor_date
 #' @importFrom rlang .data
-#' @importFrom scales comma
+#' @importFrom scales format_format pretty_breaks
 #' @importFrom stats median
 #' @importFrom tidyr complete
 #'
@@ -51,7 +52,7 @@
 #' y <- seasonal_boxplot(dat, param = 'do_mgl', target_yr = 2012)
 #' }
 #'
-#' \dontrun{
+#' \donttest{
 ## get data, prep
 #' dat <- elksmwq
 #'
@@ -76,8 +77,6 @@ seasonal_boxplot <- function(swmpr_in, ...) UseMethod('seasonal_boxplot')
 
 #' @rdname seasonal_boxplot
 #'
-#' @concept analyze
-#'
 #' @export
 #'
 #' @method seasonal_boxplot swmpr
@@ -87,6 +86,7 @@ seasonal_boxplot.swmpr <- function(swmpr_in
                                    , hist_rng = NULL
                                    , target_yr = NULL
                                    , criteria = NULL
+                                   , free_y = FALSE
                                    , log_trans = FALSE
 								                   , converted = FALSE
 								                   , criteria_lab = 'WQ Threshold'
@@ -158,7 +158,7 @@ seasonal_boxplot.swmpr <- function(swmpr_in
     warning('QAQC columns present. QAQC not performed before analysis.')
 
   # Assign the seasons and order them
-  dat$season <- assign_season(dat$datetimestamp, abb = T, ...)
+  dat$season <- assign_season(dat$datetimestamp, abb = TRUE, ...)
 
   # Assign date for determining daily stat value
   dat$date <- lubridate::floor_date(dat$datetimestamp, unit = 'days')
@@ -181,11 +181,11 @@ seasonal_boxplot.swmpr <- function(swmpr_in
 
   if(plot) {
 
-    mx <- max(dat_hist$result, na.rm = T)
+    mx <- max(dat_hist$result, na.rm = TRUE)
     mx <- ifelse(data_type == 'nut' && param != 'chla_n', ceiling(mx/0.01) * 0.01, ceiling(mx))
 
-    # assign a minimum of zero unles there are values < 0
-    mn <- min(dat_hist$result, na.rm = T)
+    # assign a minimum of zero unless there are values < 0
+    mn <- min(dat_hist$result, na.rm = TRUE)
     mn <- ifelse(mn < 0 , min(pretty(mn)), 0)
     mn <- ifelse(log_trans, ifelse(substr(station, 6, nchar(station)) == 'nut', 0.001, 0.1), mn)
 
@@ -200,21 +200,22 @@ seasonal_boxplot.swmpr <- function(swmpr_in
       theme(legend.position = 'top'
             , legend.direction = 'horizontal')
 
-    # add a log transformed access if log_trans = T
+    # add a log transformed access if log_trans == TRUE
+    ## allow y-axis to be free if free_y == TRUE
     if(!log_trans) {
+      plt <- plt +
+        scale_y_continuous(labels = format_format(digits = 2, big.mark = ",", decimal.mark = ".", scientific = FALSE)
+                           , breaks = pretty_breaks(n = 8))
 
-      plt <- plt + scale_y_continuous(limits = c(mn, mx), trans = y_trans, labels = scales::comma)
+      if(!free_y){plt <- plt + expand_limits(y = mn)}
 
     } else {
+      plt <- plt +
+        scale_y_continuous(trans = y_trans
+                                , labels = format_format(digits = 2, big.mark = ",", decimal.mark = ".", scientific = FALSE)
+                                , breaks = pretty_breaks(n = 8))
 
-      mx_log <- 10^(ceiling(log10(mx)))
-
-      mag_lo <- nchar(mn) - 2
-      mag_hi <- nchar(mx_log) - 1
-
-      brks <- 10^(-mag_lo:mag_hi)
-
-      plt <- plt + scale_y_continuous(limits = c(mn, mx_log), breaks = brks, trans = y_trans, labels = scales::comma)
+      if(!free_y) {plt <- plt + expand_limits(y = mn)}
     }
 
     # Add target year dots if specified
@@ -225,7 +226,7 @@ seasonal_boxplot.swmpr <- function(swmpr_in
         dplyr::group_by(!! seas, !! dt) %>%
         dplyr::summarise(result = FUN(!! parm)) %>%
         dplyr::group_by(!! seas) %>%
-        dplyr::summarise(med = stats::median(.data$result, na.rm = T))
+        dplyr::summarise(med = stats::median(.data$result, na.rm = TRUE))
 
       pt_fill <- ifelse(data_type == 'nut', paste('Monthly Sample \n(', target_yr, ')', sep = '')
                         , paste('Median Daily ', stat_lab, ' \n(', target_yr, ')', sep = ''))
@@ -240,7 +241,7 @@ seasonal_boxplot.swmpr <- function(swmpr_in
 
       plt <- plt +
         geom_hline(aes(yintercept = criteria, color = factor(criteria_lab), linetype = factor('WQ Threshold'))
-                   , show.legend = T) +
+                   , show.legend = TRUE) +
         scale_color_manual('', values = c('WQ Threshold' = 'red')) +
         scale_linetype_manual('', values = c('WQ Threshold' = 'longdash'))
 
@@ -274,7 +275,7 @@ seasonal_boxplot.swmpr <- function(swmpr_in
             , legend.key.width = unit(0.5, 'cm')) +
       theme(legend.text = element_text(size = 10)
             , legend.text.align = 0.5) +
-      theme(legend.spacing.x = unit(-6, 'pt'))
+      theme(legend.spacing.x = unit(3, 'pt'))
 
     return(plt)
   } else {

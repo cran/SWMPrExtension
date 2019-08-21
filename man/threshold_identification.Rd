@@ -7,8 +7,8 @@
 \usage{
 threshold_identification(swmpr_in, ...)
 
-\method{threshold_identification}{swmpr}(swmpr_in, param, parameter_threshold,
-  threshold_type, time_threshold = NULL, ...)
+\method{threshold_identification}{swmpr}(swmpr_in, param,
+  parameter_threshold, threshold_type, time_threshold = NULL, ...)
 }
 \arguments{
 \item{swmpr_in}{input swmpr object}
@@ -48,7 +48,7 @@ wq_pars<- threshold_identification(dat_wq, param = c('do_mgl', 'ph', 'temp')
                           , parameter_threshold = c(2, 5, 30)
                           , threshold_type = c('<', '<', '>'), time_threshold = 2)
 
-\dontrun{
+\donttest{
 wq_par<- threshold_identification(dat_wq, param = c('do_mgl')
                           , parameter_threshold = c(2)
                           , threshold_type = c('<'), time_threshold = 2)
@@ -74,14 +74,10 @@ nut_err <- threshold_identification(dat_nut, param = c('chla_n')
 }
 }
 \references{
-United States Environmental Protection Agency (USEPA). 2016. "National Coastal Condition Assessment 2010". EPA 841-R-15-006.
+United States Environmental Protection Agency (USEPA). 2015. "National Coastal Condition Assessment 2010". EPA 841-R-15-006.
 https://cfpub.epa.gov/si/si_public_record_Report.cfm?dirEntryId=327030
 }
 \author{
 Julie Padilla
 }
-\concept{
-analyze
-
-analyze
-}
+\concept{analyze}

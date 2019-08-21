@@ -35,7 +35,7 @@ seas <- assign_season(apacpwq$datetimestamp, abb = FALSE)
 levels(seas)
 }
 
-\dontrun{
+\donttest{
 data(elksmwq)
 dat <- elksmwq
 
@@ -65,6 +65,4 @@ levels(seas)
 \author{
 Julie Padilla
 }
-\concept{
-analyze
-}
+\concept{analyze}
