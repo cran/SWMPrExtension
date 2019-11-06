@@ -1,6 +1,6 @@
-2f3a485fa81eb7dbf37ddc71995812f5 *DESCRIPTION
+1c1c8de16e7b61e92593a6ce70efcc6e *DESCRIPTION
 aaaf3fb76bab92ea4dfbe2f8d9aba244 *NAMESPACE
-7485eb4c92437f988ccf4ba02643ba99 *NEWS.md
+42f5f933afdfeb81971c1664b41a3b77 *NEWS.md
 5c93f1a39329fb2cb100ea25be757334 *R/annual_range.R
 3082b6dae0362abf59f6656235037f75 *R/assign_season.R
 ecdfa7b6cc261d3fb9707deed2ac5629 *R/cbm_spatial.R
@@ -37,7 +37,7 @@ df8efc0a1df10cc990f205550b633ac9 *R/reserve_locs.R
 ed40208a30f843328d5678005d582553 *R/sampling_stations.R
 e12fbac831e711882bebefca11f66d93 *R/seasonal_barplot.R
 4e2c594c91c79b5d62d1c23de50f09eb *R/seasonal_boxplot.R
-872f5e9ac5cca5e006fb70396284473f *R/seasonal_dot.R
+c249f30098772551b8c1db975d130ba2 *R/seasonal_dot.R
 c1ac2991f959d8b0653d901459dff706 *R/set_date_breaks.R
 d1cfb52a753ade91b3d410e68499e988 *R/sk_seasonal.R
 3d4af7bf1aad20b00fdcdbab958d04a1 *R/sk_tidy.R
