@@ -1,7 +1,7 @@
 Package: SWMPrExtension
 Type: Package
 Title: Functions for Analyzing and Plotting Estuary Monitoring Data
-Version: 1.1.4
+Version: 1.1.5
 Maintainer: Dave Eslinger <dave.eslinger@noaa.gov>
 Description: Tools for performing routine analysis and plotting tasks with environmental
     data from the System Wide Monitoring Program of the National Estuarine
@@ -22,7 +22,8 @@ LazyData: true
 Depends: R (>= 3.5.0), SWMPr
 Imports: broom, dplyr, EnvStats, flextable, ggplot2, ggthemes,
         grDevices, leaflet, lubridate, magrittr, maptools, methods,
-        officer, tidyr, scales, RColorBrewer, rgdal, rgeos, rlang, sp
+        officer, purrr, RColorBrewer, rgdal, rgeos, rlang, scales, sp,
+        tidyr
 Authors@R: c(
   person(given = "Julie", family = "Padilla",
     role = c("aut", "ctb"),
@@ -42,11 +43,11 @@ Authors@R: c(
 	)
 RoxygenNote: 7.1.0
 NeedsCompilation: no
-Packaged: 2020-05-02 18:11:22 UTC; davee
+Packaged: 2020-05-29 23:11:04 UTC; Dave.Eslinger
 Author: Julie Padilla [aut, ctb],
   Marcus Beck [ctb],
   Kimberly Cressman [ctb],
   Dave Eslinger [cre, ctb],
   Bob Rudis [ctb]
 Repository: CRAN
-Date/Publication: 2020-05-04 15:10:11 UTC
+Date/Publication: 2020-05-30 04:20:03 UTC
