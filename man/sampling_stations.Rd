@@ -3,7 +3,7 @@
 \docType{data}
 \name{sampling_stations}
 \alias{sampling_stations}
-\title{Detailed of NERRS site data}
+\title{Detailed NERRS site data}
 \format{
 A \code{\link[base]{data.frame}} object
 }

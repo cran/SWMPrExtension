@@ -48,21 +48,21 @@
 #'
 #' x <-
 #'   threshold_percentile_plot(dat_wq, param = 'do_mgl'
-#'                            , hist_rng = c(2007, 2014), by_month = FALSE)
+#'                            , hist_rng = c(2013, 2014), by_month = FALSE)
 #'
 #' \donttest{
 #' y <-
 #'   threshold_percentile_plot(dat_wq, param = 'do_mgl', percentiles = c(0.95)
-#'                            , hist_rng = c(2007, 2014), target_yr = 2014
+#'                            , hist_rng = c(2013, 2014), target_yr = 2014
 #'                            , by_month = FALSE)
 #'
 #' x2 <-
 #'   threshold_percentile_plot(dat_wq, param = 'do_mgl'
-#'                            , hist_rng = c(2007, 2014), by_month = TRUE)
+#'                            , hist_rng = c(2013, 2014), by_month = TRUE)
 #'
 #' y2 <-
 #'   threshold_percentile_plot(dat_wq, param = 'do_mgl'
-#'                            , hist_rng = c(2007, 2014), by_month = TRUE
+#'                            , hist_rng = c(2013, 2014), by_month = TRUE
 #'                            , target_yr = 2014)
 #'
 #'
@@ -194,7 +194,13 @@ threshold_percentile_plot.swmpr <- function(swmpr_in
   dummy <- data.frame(month = rep(c(1:12), yr_ct), year = rep(c(mn_yr:mx_yr), each = 12), dummy = -999, stringsAsFactors = FALSE)
   dummy[nrow(dummy) + 1 , ] <- c(1, max(dummy$year) + 1, -999)
 
-  bar_plt <- left_join(dummy, bars)
+  if(by_month) {
+    join_var = "month"
+  }  else {
+
+    join_var = "dummy"
+  }
+  bar_plt <- left_join(dummy, bars, by = join_var)
   bar_plt$datetimestamp <- lubridate::ymd_hms(paste(bar_plt$year, bar_plt$month, '1 00:00:00', sep = '-'))
 
   # set a few labels and colors ----
