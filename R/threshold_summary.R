@@ -18,10 +18,9 @@
 #'
 #' @import ggplot2
 #'
-#' @importFrom dplyr filter group_by left_join n summarise
+#' @importFrom dplyr case_when filter group_by left_join n summarise
 #' @importFrom magrittr "%>%"
 #' @importFrom lubridate  month year
-#' @importFrom rlang .data
 #' @importFrom scales comma
 #'
 #' @export
@@ -105,44 +104,8 @@ threshold_summary.swmpr <- function(swmpr_in
                                     , label_y_axis = TRUE
                                     , ...)
 {
-  # # ================== BEGIN DEBUG VARIBLE DEFS ==========================================
-  # debug = FALSE
-  # if(debug) {
-  #   library(SWMPrExtension)
-  #   library(magrittr)
-  #   library(ggplot2)
-  #   library(dplyr)
-  #   # USE Variables from SEASON do_mgl example
-  #   ## Water quality examples
-  #   # dat_wq <- qaqc(apacpwq, qaqc_keep = c(0, 3, 5))
-  #   # dat_wq <- setstep(dat_wq)
-  #   #
-  #   # y <-
-  #   #   threshold_summary(dat_wq, param = 'do_mgl', parameter_threshold = 2,
-  #   #                     threshold_type = '<', time_threshold = 2, summary_type = 'season',
-  #   #                     season_grps = list(c(1,2,3), c(4,5,6), c(7,8,9), c(10, 11, 12)),
-  #   #                     season_names = c('Winter', 'Spring', 'Summer', 'Fall'),
-  #   #                     season_start = 'Winter',
-  #   #                     plot_title = TRUE)
-  #   data("apacpwq")
-  #   swmpr_in <- SWMPr::qaqc(apacpwq, qaqc_keep = c(0, 3, 5))
-  #   swmpr_in <- SWMPr::setstep(swmpr_in)
-  #   param = 'do_mgl'
-  #   parameter_threshold = 2
-  #   threshold_type = '<'
-  #   time_threshold = 2
-  #   summary_type = 'season'
-  #   season_grps = list(c(1,2,3), c(4,5,6), c(7,8,9), c(10, 11, 12))
-  #   season_names = c('Winter', 'Spring', 'Summer', 'Fall')
-  #   season_start = 'Winter'
-  #   plot_title = TRUE
-  #   converted = FALSE
-  #   pal = 'Set3'
-  #   plot = TRUE
-  #   label_y_axis = TRUE
-  # }
-  # # =================== END DEBUG  VARIBLE DEFS===========================================
-  #
+  # define local variables  to remove `check()` warnings
+  count <- NULL
 
   dat <- swmpr_in
   parm <- sym(param)
@@ -185,29 +148,8 @@ threshold_summary.swmpr <- function(swmpr_in
 
 
   # Assign the seasons and order them
-  # if(debug) {
-  #   dat_threshold$season <- assign_season(dat_threshold$starttime,
-  #                                       season_grps = season_grps,
-  #                                       season_names = season_names,
-  #                                       season_start = season_start,
-  #                                       abb = TRUE)#, ...)
-  # } else {
     dat_threshold$season <- assign_season(dat_threshold$starttime,
                                         abb = TRUE, ...)
-  # }
-
-  # if(grp == seas) {
-  #   summary <- dat_threshold %>%
-  #   # group_by(!! yr, !! grp) %>%
-  #   group_by(!! yr, !! grp) %>%
-  #   summarise(count = n(), .groups = "drop_last")
-  # } else {
-  #   summary <- dat_threshold %>%
-  #     # group_by(!! yr, !! grp) %>%
-  #     group_by(!! yr, !! grp, !! seas) %>%
-  #     # group_by(!! grp) %>%
-  #     summarise(count = n(), .groups = "drop_last")
-  # }
 
   mn_yr <- min(lubridate::year(dat$datetimestamp))
   mx_yr <- max(lubridate::year(dat$datetimestamp))
@@ -274,9 +216,18 @@ threshold_summary.swmpr <- function(swmpr_in
 
 
     brks <- seq(from = 1, to = max(dat_grp$x_lab), by = by_arg)
-    brk_labs <- seq(from = mn_yr, to = mx_yr, by = 1)
+    label_spacing <- case_when(
+        mx_yr - mn_yr > 20 ~ 4,
+        mx_yr - mn_yr > 10 ~ 2,
+        TRUE               ~ 1)
 
-    plt <-
+    dummy_labs <- seq(from = mn_yr, to = mx_yr, by = 1)
+    brk_labs <- rep("", length(dummy_labs))
+    label_indx <- seq(1, length(dummy_labs), label_spacing)
+    brk_labs[label_indx] <- dummy_labs[label_indx]
+
+
+plt <-
       ggplot(dat_grp, aes_string(x = 'x_lab', y = 'count', fill = 'grp_join')) +
       geom_bar(stat = 'identity', position = 'dodge') +
       scale_x_continuous(breaks = brks, labels = brk_labs) +

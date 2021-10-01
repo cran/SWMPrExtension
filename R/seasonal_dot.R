@@ -17,7 +17,7 @@
 #'
 #' @import ggplot2
 #'
-#' @importFrom dplyr filter group_by summarise
+#' @importFrom dplyr case_when filter group_by summarise
 #' @importFrom lubridate  year floor_date
 #' @importFrom magrittr "%>%"
 #' @importFrom tidyr complete gather
@@ -108,23 +108,6 @@ seasonal_dot.swmpr <- function(swmpr_in
                                , plot = TRUE
                                , ...) {
 
-  # #------------FOR DEBUGGING--------------------------------------------------
-  # library(dplyr)
-  # dat_wq <- elksmwq
-  # dat_wq <- qaqc(dat_wq, qaqc_keep = c(0, 3, 5))
-  # swmpr_in <- dat_wq
-  # param = 'do_mgl'
-  # lm_trend = TRUE
-  # lm_lab = TRUE
-  # plot_title = TRUE
-  # free_y = FALSE
-  # log_trans = FALSE
-  # converted = FALSE
-  # plot_title = FALSE
-  # plot = TRUE
-
-  # #--------------END DEBUGGING------------------------------------------------
-
   dat <- swmpr_in
   parm <- sym(param)
   conv <- converted
@@ -156,7 +139,6 @@ seasonal_dot.swmpr <- function(swmpr_in
     warning('QAQC columns present. QAQC not performed before analysis.')
 
   # Assign the seasons and order them
-  # DEBUG dat$season <- assign_season(dat$datetimestamp, abb = TRUE)
   dat$season <- assign_season(dat$datetimestamp, abb = TRUE, ...)
 
   # Assign date for determining daily stat value
@@ -188,12 +170,17 @@ seasonal_dot.swmpr <- function(swmpr_in
     agg_lab <- ifelse(length(levels(plt_data$season)) == 12, 'Monthly ', 'Seasonal ')
 
     labs_legend <- factor(paste0(agg_lab, c('Minimum', 'Average', 'Maximum'), sep = ''))
+
     brks <- range(plt_data$year)
+    tick_interval <- case_when(
+      diff(brks) > 20  ~ 4,
+      diff(brks) > 10  ~ 2,
+      TRUE            ~ 1)
 
     mx <- max(plt_data[ , c(3:5)], na.rm = TRUE) * 1.2
     mx <- ifelse(data_type == 'nut' && param != 'chla_n', ceiling(mx/0.01) * 0.01, ceiling(mx))
 
-    # assign a minimum of zero unles there are values < 0
+    # assign a minimum of zero unless there are values < 0
     mn <- min(plt_data[ , c(3:5)], na.rm = TRUE)
     mn <- ifelse(mn < 0 , min(pretty(mn)), 0)
     mn <- ifelse(log_trans, ifelse(substr(station, 6, nchar(station)) == 'nut', 0.001, 0.1), mn)
@@ -205,7 +192,8 @@ seasonal_dot.swmpr <- function(swmpr_in
       geom_point(data = plt_data, aes_string(x = "year", y = "max", color = labs_legend[3])) +
       geom_point() +
       scale_color_manual('', values = c('black', 'red', 'blue')) +
-      scale_x_continuous(breaks = seq(from = brks[1], to = brks[2], by = 1)) +
+      scale_x_continuous(breaks = seq(from = brks[1], to = brks[2],
+                                      by = tick_interval)) +
       facet_wrap(~ season) +
       labs(x = NULL, y = eval(y_label))
 

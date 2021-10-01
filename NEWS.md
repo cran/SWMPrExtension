@@ -1,3 +1,22 @@
+### SWMPrExtension 2.0.0
+* Public release after merge of sf_transition and tmap branches. 
+* Addresses issue #29: replacing {sp} with {sf} 
+* Addresses issue #44: PhantomJS replacement
+
+### SWMPrExtension 1.1.8.2
+* Replacing {ggmap} functionality with {tmap} functionality.
+
+### SWMPrExtension 1.1.8.1
+* Addressing ISSUE #29: replacing {sp} with {sf}
+* Changed source file for national map to Long/Lat, NAD83, i.e., EPSG = 4269.
+* Switch national map projection used in mapping to EPSG=2163, a standard (i.e., has an EPSG code), spherical Lambert Azimuthal Equal Area projection. Note that HI, PR, and AK all us different projections, as appropriate.
+* Removed all {sp}, {leaflet} and {tmap} uses.  Replaced with {sf} and {ggmap}.
+* Added ability to use stamen maps for local maps.
+* Lost ability to put a scalebar on reserve-level maps.
+
+### SWMPrExtension 1.1.8
+* Fixing issue with x-axis labels overwriting themselves.  Adding a variable major tick capability.
+
 ### SWMPrExtension 1.1.7
 * Added update_sampling_stations.R function to update reserve-specific station data when a new reserve is added, or SWMP stations are moved.
 * Description files for the data files needed for the above change.
