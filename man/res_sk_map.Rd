@@ -12,8 +12,9 @@ res_sk_map(
   shp,
   station_labs = TRUE,
   lab_loc = NULL,
+  bg_map = NULL,
   zoom = NULL,
-  maptype = "stamen-toner"
+  maptype = "toner-lite"
 )
 }
 \arguments{
@@ -23,7 +24,7 @@ res_sk_map(
 
 \item{sk_result}{vector of values denoting direction and significance of seasonal kendall results. Result should be \code{c('inc', 'dec', 'insig', 'insuff')} for significant positive, significant negative, no significant results, and insufficient data to calculate result.}
 
-\item{bbox}{a bounding box associated with the reserve. Must be in the format of c(X1, Y1, X2, Y2)}
+\item{bbox}{a bounding box associated with the reserve. Should be in the format of c(xmin, ymin, xmax, ymax).}
 
 \item{shp}{{sf} data frame (preferred) or SpatialPolygons object}
 
@@ -31,18 +32,20 @@ res_sk_map(
 
 \item{lab_loc}{chr vector of 'R' and 'L', one letter for each station. if no \code{lab_loc} is specified then labels will default to the left.}
 
-\item{zoom}{zoom level, 1-21 for OpenStreetMaps maps. Default is to autoscale based on bbox. Higher numbers give more detail.}
+\item{bg_map}{a georeferenced \code{ggmap} or \code{ggplot} object used as a background map, generally provided by a call to \code{\link{base_map}}. If \code{bg_map} is specified, \code{maptype} and \code{zoom} are ignored.}
 
-\item{maptype}{stamen map type from OpenStreetMap::openmap. Theoretically one of c("osm", "osm-bw","maptoolkit-topo", "waze", "bing", "stamen-toner", "stamen-terrain", "stamen-watercolor", "osm-german", "osm-wanderreitkarte", "mapbox", "esri", "esri-topo", "nps", "apple-iphoto", "skobbler", "hillshade", "opencyclemap", "osm-transport", "osm-public-transport", "osm-bbike", "osm-bbike-german").  However, many of these may not work. "stamen-toner", "stamen-terrain", and "bing" seem to work well.}
+\item{zoom}{Zoom level for the base map created when \code{bg_map} is not specified.  An integer value, 5 - 15, with higher numbers providing  more detail.  If not provided, a zoom level is autoscaled based on \code{bbox} parameters.}
+
+\item{maptype}{Background map type from Stamen Maps (\url{http://maps.stamen.com/}); one of c("terrain", "terrain-background", "terrain-labels", "terrain-lines", "toner", "toner-2010", "toner-2011", "toner-background", "toner-hybrid", "toner-labels", "toner-lines", "toner-lite", "watercolor").}
 }
 \value{
-returns a {ggplot} object.
+returns a \code{ggplot} object.
 }
 \description{
 Create a stylized reserve-level map of seasonal kendall results for use with the reserve level reporting template
 }
 \details{
-Creates a stylized, reserve-level base map for displaying seasonal kendall results from \code{\link{sk_seasonal}}. The user can specify the reserve and stations to plot. The user can also specify a bounding box. For multi-component reserves, the user should specify a bounding box that highlights the component of interest.
+Creates a stylized, reserve-level base map for displaying seasonal kendall results from \code{sk_seasonal}. The user can specify the reserve and stations to plot. The user can also specify a bounding box. For multi-component reserves, the user should specify a bounding box that highlights the component of interest.
 
 To display seasonal trends, the user must specify \code{c('inc', 'dec', 'insig', 'insuff')} for each station listed in the \code{stations} argument.
 }
@@ -56,14 +59,14 @@ stations <- sampling_stations[(sampling_stations$NERR.Site.ID == 'elk'
      to_match <- c('wq')
 stns <- stations[grep(paste(to_match, collapse = '|'), stations)]
 shp_fl <- elk_spatial
-bounding_elk <- c(-121.810978, 36.868218, -121.708667, 36.764050)
+bounding_elk <- c(-121.8005, 36.7779, -121.6966, 36.8799)
 trnds <- c('inc', 'dec', 'insuff', 'insig')
 
 ### Low zoom and default maptype plot (for CRAN testing, not recommended)
 #    Lower zoom number gives coarser text and fewer features
-x_low <- res_sk_map('elk', stations = stns, sk_result = trnds,
+(x_low <- res_sk_map('elk', stations = stns, sk_result = trnds,
                  bbox = bounding_elk, shp = shp_fl,
-                 zoom = 10)
+                 zoom = 10))
 
 \donttest{
 
@@ -76,12 +79,10 @@ x_14 <- res_sk_map('elk', stations = stns, sk_result = trnds,
                  bbox = bounding_elk, shp = shp_fl,
                  zoom = 14)
 
-### Different maptypes may be used.  All may not be available.
-#    Note that zoom and maptype interact, so some experimentation may be
-#    required.
+### Different maptypes may be used.
 x_terrain <- res_sk_map('elk', stations = stns, sk_result = trnds,
                  bbox = bounding_elk, shp = shp_fl,
-                 maptype = 'stamen-terrain')
+                 maptype = 'terrain')
 ### A multicomponent reserve (showing two different bounding boxes)
 
 #  set plotting parameters
@@ -91,7 +92,7 @@ stations <- sampling_stations[(sampling_stations$NERR.Site.ID == 'cbm'
          to_match <- c('wq')
 stns <- stations[grep(paste(to_match, collapse = '|'), stations)]
 shp_fl <- cbm_spatial
-bounding_cbm_1 <- c(-77.393, 39.741, -75.553, 38.277)
+bounding_cbm_1 <- c(-77.393, 38.277, -75.553, 39.741)
 bounding_cbm_2 <- c(-76.8,  38.7, -76.62,  38.85)
 trnds <- c('inc', 'insuff', 'dec', 'insig')
 

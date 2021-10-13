@@ -13,8 +13,9 @@ res_custom_map(
   station_labs = TRUE,
   station_col = NULL,
   lab_loc = NULL,
+  bg_map = NULL,
   zoom = NULL,
-  maptype = "stamen-toner"
+  maptype = "toner-lite"
 )
 }
 \arguments{
@@ -24,19 +25,34 @@ res_custom_map(
 
 \item{y_loc}{num vector of y coordinates for \code{stations}}
 
-\item{bbox}{a bounding box associated with the reserve. Must be in the format of c(X1, Y1, X2, Y2)}
+\item{bbox}{a bounding box associated with the reserve. Must be in the format
+of c(X1, Y1, X2, Y2)}
 
 \item{shp}{{sf} data frame (preferred) or SpatialPolygons object}
 
-\item{station_labs}{logical, should stations be labeled? Defaults to \code{TRUE}}
+\item{station_labs}{logical, should stations be labeled? Defaults to
+\code{TRUE}}
 
-\item{station_col}{chr vector of colors used to color station points. Defaults to 'black'.}
+\item{station_col}{chr vector of colors used to color station points.
+Defaults to 'black'.}
 
-\item{lab_loc}{chr vector of 'R' and 'L', one letter for each station. if no \code{lab_loc} is specified then labels will default to the left.}
+\item{lab_loc}{chr vector of 'R' and 'L', one letter for each station. if no
+\code{lab_loc} is specified then labels will default to the left.}
 
-\item{zoom}{zoom level, 1-21 for stamen maps. Default is to autoscale based on bbox.}
+\item{bg_map}{a georeferenced \code{ggmap} or \code{ggplot} object used as a
+background map, generally provided by a call to \code{\link{base_map}}. If
+\code{bg_map} is specified, \code{maptype} and \code{zoom} are ignored.}
 
-\item{maptype}{stamen map type from OpenStreetMap::openmap. Theoretically one of c("osm", "osm-bw","maptoolkit-topo", "waze", "bing", "stamen-toner", "stamen-terrain", "stamen-watercolor", "osm-german", "osm-wanderreitkarte", "mapbox", "esri", "esri-topo", "nps", "apple-iphoto", "skobbler", "hillshade", "opencyclemap", "osm-transport", "osm-public-transport", "osm-bbike", "osm-bbike-german").  However, many of these may not work. "stamen-toner", "stamen-terrain", and "bing" seem to work well.}
+\item{zoom}{Zoom level for the base map created when \code{bg_map} is not
+specified.  An integer value, 5 - 15, with higher numbers providing  more
+detail.  If not provided, a zoom level is autoscaled based on \code{bbox}
+parameters.}
+
+\item{maptype}{Background map type from Stamen Maps
+(\url{http://maps.stamen.com/}); one of c("terrain", "terrain-background",
+"terrain-labels", "terrain-lines", "toner", "toner-2010", "toner-2011",
+"toner-background", "toner-hybrid", "toner-labels", "toner-lines",
+"toner-lite", "watercolor").}
 }
 \value{
 returns a {ggplot} object
@@ -45,11 +61,17 @@ returns a {ggplot} object
 Create a stylized reserve-level map of custom station locations for use with the reserve level reporting template
 }
 \details{
-Creates a stylized, reserve-level base map. The user can specify the reserve and stations to plot. The user can also specify a bounding box. For multi-component reserves, the user should specify a bounding box that highlights the component of interest.
+Creates a stylized, reserve-level base map. The user can specify the
+  reserve and stations to plot. The user can also specify a bounding box. For
+  multi-component reserves, the user should specify a bounding box that
+  highlights the component of interest.
 
-This function does not automatically detect conflicts between station labels. The \code{lab_loc} argument allows the user to specify "R" or "L" for each station to prevent labels from conflicting with each other.
+  This function does not automatically detect conflicts between station
+  labels. The \code{lab_loc} argument allows the user to specify "R" or "L"
+  for each station to prevent labels from conflicting with each other.
 
-This function is intended to be used with \code{mapview::mapshot} to generate a png for the reserve-level report.
+  This function is intended to be used with \code{mapview::mapshot} to
+  generate a png for the reserve-level report.
 }
 \examples{
 ### set plotting parameters
@@ -57,14 +79,14 @@ stns <- c('custom stn 1', 'custom stn 2')
 x_coords <- c(-121.735281, -121.750369)
 y_coords <- c(36.850377, 36.806667)
 shp_fl <- elk_spatial
-bounding_elk <- c(-121.810978, 36.868218, -121.708667, 36.764050)
+bounding_elk <- c(-121.8005, 36.7779, -121.6966, 36.8799)
 lab_dir <- c('L', 'R')
 
 ### Low zoom and default maptype plot (for CRAN testing, not recommended)
 #    Lower zoom number gives coarser text and fewer features
-x_low <- res_custom_map(stations = stns, x_loc = x_coords, y_loc = y_coords,
+(x_low <- res_custom_map(stations = stns, x_loc = x_coords, y_loc = y_coords,
                     bbox = bounding_elk, lab_loc = lab_dir, shp = shp_fl,
-                    zoom = 10)
+                    zoom = 10))
 
 \donttest{
 x_def <- res_custom_map(stations = stns, x_loc = x_coords, y_loc = y_coords,
