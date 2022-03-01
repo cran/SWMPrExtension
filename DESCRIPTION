@@ -1,12 +1,12 @@
 Package: SWMPrExtension
 Type: Package
 Title: Functions for Analyzing and Plotting Estuary Monitoring Data
-Version: 2.1.0
+Version: 2.1.1
 Maintainer: Dave Eslinger <dave.eslinger@noaa.gov>
 Description: Tools for performing routine analysis and plotting tasks with environmental
     data from the System Wide Monitoring Program of the National Estuarine
     Research Reserve System <http://cdmo.baruch.sc.edu/>. This package builds
-    on the functionality of the SWMPr package <https://cran.r-project.org/package=SWMPr>,
+    on the functionality of the 'SWMPr' package <https://cran.r-project.org/package=SWMPr>,
     which is used to retrieve and organize the data. The combined set of tools
     address common challenges associated with continuous time series data
     for environmental decision making, and are intended for use in annual reporting activities.
@@ -39,15 +39,19 @@ Authors@R: c(
 	email = "dave.eslinger@noaa.gov"),
   person(given = "Bob", family = "Rudis",
     role = c("ctb"),
-	email = "bob@rud.is")
+	email = "bob@rud.is"),
+  person(given = "Davis", family = "Vaughan",
+    role = c("ctb"),
+	email = "davis@rstudio.com")
 	)
 RoxygenNote: 7.1.2
 NeedsCompilation: no
-Packaged: 2021-10-13 16:53:30 UTC; Dave.Eslinger
+Packaged: 2022-02-28 14:17:34 UTC; davee
 Author: Julie Padilla [aut, ctb],
   Marcus Beck [ctb],
   Kimberly Cressman [ctb],
   Dave Eslinger [cre, ctb],
-  Bob Rudis [ctb]
+  Bob Rudis [ctb],
+  Davis Vaughan [ctb]
 Repository: CRAN
-Date/Publication: 2021-10-13 17:12:03 UTC
+Date/Publication: 2022-03-01 21:30:02 UTC
