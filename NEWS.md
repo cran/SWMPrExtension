@@ -1,4 +1,10 @@
-### SwmprExtenstion 2.1.1
+### SwmprExtension 2.2.0
+* Fix empty season failure in seasonal_dot.R.
+* Changed all seasonal Kendal test results to plot with custom png icons instead of ggplot characters.
+* Fixed multiple seasonal means being plotted in seasonal_barplot.R
+* Change projection for national_sk_map to a UTM projection to reduce distortion in png icons.
+
+### SwmprExtension 2.1.1
 * Fix overlapping label issues in seasonal_barplot.R
 * Change most `.groups = "drop_last"` commands to `.groups = drop` commands.  Those were required by `dplyr::summarize` changes referred to in version 1.1.6.  In most cases in this package, all groupings could be dropped.
 * Dropped groups before using `complete` as recommended in [SWMPrExtension issue #54](https://github.com/NOAA-OCM/SWMPrExtension/pull/54).
