@@ -1,7 +1,7 @@
 Package: SWMPrExtension
 Type: Package
 Title: Functions for Analyzing and Plotting Estuary Monitoring Data
-Version: 2.2.0
+Version: 2.2.2.0
 Maintainer: Dave Eslinger <dave.eslinger@noaa.gov>
 Description: Tools for performing routine analysis and plotting tasks with environmental
     data from the System Wide Monitoring Program of the National Estuarine
@@ -47,7 +47,7 @@ Authors@R: c(
 	)
 RoxygenNote: 7.1.2
 NeedsCompilation: no
-Packaged: 2022-03-16 20:53:27 UTC; davee
+Packaged: 2022-04-11 15:59:02 UTC; davee
 Author: Julie Padilla [aut, ctb],
   Marcus Beck [ctb],
   Kimberly Cressman [ctb],
@@ -55,4 +55,4 @@ Author: Julie Padilla [aut, ctb],
   Bob Rudis [ctb],
   Davis Vaughan [ctb]
 Repository: CRAN
-Date/Publication: 2022-03-16 23:20:02 UTC
+Date/Publication: 2022-04-11 18:32:32 UTC

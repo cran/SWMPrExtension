@@ -31,7 +31,7 @@
 #'
 #' @references
 #' United States Environmental Protection Agency (USEPA). 2012. "National Coastal Condition Report IV."
-#' http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.646.1973&rep=rep1&type=pdf
+#' https://www.epa.gov/national-aquatic-resource-surveys/national-coastal-condition-report-iv-2012
 #'
 #' @author Julie Padilla
 #'
@@ -249,6 +249,7 @@ threshold_criteria_plot.swmpr <- function(swmpr_in
     labs(x = NULL, y = eval(y_label)) +
     theme_bw() +
     theme(legend.position = 'top'
+          , legend.title = element_blank()
           , legend.direction = 'horizontal')
 
   # add background labels
@@ -271,7 +272,7 @@ threshold_criteria_plot.swmpr <- function(swmpr_in
     theme(plot.margin = margin(5.5, 11, 11, 5.5, 'pt')) +
     theme(axis.title.y = element_text(margin = margin(0, 8, 0, 0, 'pt'), angle = 90)) + #trbl
     # theme(axis.title.y = element_text(margin = unit(c(0, 8, 0, 0), 'pt'), angle = 90)) + #trbl
-    theme(text = element_text(size = 16))
+    theme(text = element_text(size = 14)) # was 16
 
   # Adjust legend keys and spacing
   plt <-
