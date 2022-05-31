@@ -1,6 +1,10 @@
+### SWMPrExtension 2.2.3
+* Change mapping checks to accommodate multi-polygons
+* Change Maintainer role to Kirk.Waters@noaa.gov
+
 ### SWMPrExtension 2.2.2.0
 * Change EPA National Condition Report to landing page instead of PDF download.
-* Checked for CRAN submission
+* Checked for CRAN submission.
 
 ### SWMPrExtension 2.2.1.1
 * Fixed bug in threshold_criteria_plot.R that displayed legend title (lab_dat).
