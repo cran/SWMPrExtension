@@ -1,11 +1,11 @@
 Package: SWMPrExtension
 Type: Package
 Title: Functions for Analyzing and Plotting Estuary Monitoring Data
-Version: 2.2.3
-Maintainer: Kirk Waters <kirk.waters@noaa.gov>
+Version: 2.2.4.2
+Maintainer: Matt Dornback <matt.dornback@noaa.gov>
 Description: Tools for performing routine analysis and plotting tasks with environmental
     data from the System Wide Monitoring Program of the National Estuarine
-    Research Reserve System <http://cdmo.baruch.sc.edu/>. This package builds
+    Research Reserve System <https://cdmo.baruch.sc.edu/>. This package builds
     on the functionality of the 'SWMPr' package <https://cran.r-project.org/package=SWMPr>,
     which is used to retrieve and organize the data. The combined set of tools
     address common challenges associated with continuous time series data
@@ -14,7 +14,7 @@ Description: Tools for performing routine analysis and plotting tasks with envir
     Beck, Marcus W. (2016) <ISSN 2073-4859><https://journal.r-project.org/archive/2016-1/beck.pdf>
     Rudis, Bob (2014) <https://rud.is/b/2014/11/16/moving-the-earth-well-alaska-hawaii-with-r/>.
     United States Environmental Protection Agency (2015) <https://cfpub.epa.gov/si/si_public_record_Report.cfm?Lab=OWOW&dirEntryId=327030>.
-    United States Environmental Protection Agency (2012) <http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.646.1973&rep=rep1&type=pdf>.
+    United States Environmental Protection Agency (2012) <https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.646.1973&rep=rep1&type=pdf>.
 BugReports: https://github.com/NOAA-OCM/SWMPrExtension/issues
 License: CC0
 Encoding: UTF-8
@@ -39,24 +39,28 @@ Authors@R: c(
     role = c("aut", "ctb"),
 	email = "dave.eslinger01@gmail.com"),
   person(given = "Kirk", family = "Waters",
-    role = c("cre"),
+    role = c("ctb"),
 	email = "kirk.waters@noaa.gov"),
   person(given = "Bob", family = "Rudis",
     role = c("ctb"),
 	email = "bob@rud.is"),
   person(given = "Davis", family = "Vaughan",
     role = c("ctb"),
-	email = "davis@rstudio.com")
+	email = "davis@rstudio.com"),
+	person(given = "Matt", family = "Dornback",
+	  role = c("aut","cre"),
+	email = "matt.dornback@noaa.gov")
 	)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2022-05-31 13:28:38 UTC; Kirk.Waters
+Packaged: 2023-04-20 17:59:22 UTC; Kirk.Waters
 Author: Julie Padilla [aut, ctb],
   Marcus Beck [ctb],
   Kimberly Cressman [ctb],
   Dave Eslinger [aut, ctb],
-  Kirk Waters [cre],
+  Kirk Waters [ctb],
   Bob Rudis [ctb],
-  Davis Vaughan [ctb]
+  Davis Vaughan [ctb],
+  Matt Dornback [aut, cre]
 Repository: CRAN
-Date/Publication: 2022-05-31 15:50:05 UTC
+Date/Publication: 2023-04-20 22:12:34 UTC
