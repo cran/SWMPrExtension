@@ -1,7 +1,7 @@
 Package: SWMPrExtension
 Type: Package
 Title: Functions for Analyzing and Plotting Estuary Monitoring Data
-Version: 2.2.4.2
+Version: 2.2.5
 Maintainer: Matt Dornback <matt.dornback@noaa.gov>
 Description: Tools for performing routine analysis and plotting tasks with environmental
     data from the System Wide Monitoring Program of the National Estuarine
@@ -14,7 +14,6 @@ Description: Tools for performing routine analysis and plotting tasks with envir
     Beck, Marcus W. (2016) <ISSN 2073-4859><https://journal.r-project.org/archive/2016-1/beck.pdf>
     Rudis, Bob (2014) <https://rud.is/b/2014/11/16/moving-the-earth-well-alaska-hawaii-with-r/>.
     United States Environmental Protection Agency (2015) <https://cfpub.epa.gov/si/si_public_record_Report.cfm?Lab=OWOW&dirEntryId=327030>.
-    United States Environmental Protection Agency (2012) <https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.646.1973&rep=rep1&type=pdf>.
 BugReports: https://github.com/NOAA-OCM/SWMPrExtension/issues
 License: CC0
 Encoding: UTF-8
@@ -23,8 +22,8 @@ Depends: R (>= 4.0), SWMPr
 Imports: EnvStats, RColorBrewer, broom, dplyr, flextable, ggimage,
         ggplot2, ggthemes, grDevices, lubridate, magrittr, methods,
         officer, purrr, rlang, scales, sf, stats, tidyselect, tidyr,
-        utils
-Suggests: ggmap
+        utils, curl
+Suggests: ggmap (>= 4.0.0), testthat (>= 3.0.0)
 Authors@R: c(
   person(given = "Julie", family = "Padilla",
     role = c("aut", "ctb"),
@@ -52,8 +51,9 @@ Authors@R: c(
 	email = "matt.dornback@noaa.gov")
 	)
 RoxygenNote: 7.2.3
+Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-04-20 17:59:22 UTC; Kirk.Waters
+Packaged: 2024-01-11 00:33:52 UTC; matt.dornback
 Author: Julie Padilla [aut, ctb],
   Marcus Beck [ctb],
   Kimberly Cressman [ctb],
@@ -63,4 +63,4 @@ Author: Julie Padilla [aut, ctb],
   Davis Vaughan [ctb],
   Matt Dornback [aut, cre]
 Repository: CRAN
-Date/Publication: 2023-04-20 22:12:34 UTC
+Date/Publication: 2024-01-11 08:23:03 UTC
