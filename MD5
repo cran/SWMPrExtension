@@ -1,9 +1,9 @@
-a6c96901d55c9a636d784b28821ac705 *DESCRIPTION
+5162f7375fd1ca60d77508474ca227bf *DESCRIPTION
 675365638a3e6fdf5ba91e51b22b7c6a *NAMESPACE
 8323b232b9f0ff9a129ac40da45e78e2 *NEWS.md
 da79cd38802a422da2617f3e8b2a1b0d *R/annual_range.R
 c5a64ba9a2ccf9c6b87f639c7263f9a9 *R/assign_season.R
-0c277132af90607526f4b547a6241067 *R/base_map.R
+5772edb8aad85d00719a34d2090a82cb *R/base_map.R
 06a048207864ea7700dfe95a73cbd6b4 *R/cbm_spatial.R
 d042c20c7e840d6149643ecf56f34027 *R/counties_4269.R
 bcb8bdca4a7d54cafc15ece7cbd4b903 *R/create_sk_flextable_list.R
@@ -72,7 +72,7 @@ c5de1e61dc4b07b86d97a6551a7bd9d6 *inst/extdata/sampling_stations_2022-03-18.csv
 deb9fe71b07b547d7235585154e6eeb0 *inst/extdata/up_arrow.png
 7fb9e86c09651be4735f89e8ea5506a2 *man/annual_range.Rd
 398895b5aa288817711329dcbe2673ef *man/assign_season.Rd
-d70b5bde3e8a9150f2e3f40044302944 *man/base_map.Rd
+e1278efbf1ed3725bed07e3df94d18ec *man/base_map.Rd
 54cc6f24f87c4b9a4743c40f17a58f12 *man/cbm_spatial.Rd
 a18ea4c849d298481dc632e7411653e4 *man/counties_4269.Rd
 630394db39a9abb66ad36d53c6c6b9e8 *man/create_sk_flextable_list.Rd

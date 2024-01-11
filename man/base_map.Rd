@@ -8,7 +8,7 @@ base_map(
   bbox,
   bg_crs = 4326,
   vector_only = FALSE,
-  maptype = maptype,
+  maptype = "stamen_toner_lite",
   zoom = NULL,
   ...
 )
